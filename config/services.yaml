@@ -1,17 +1,16 @@
 services:
-  _defaults:
-    autowire: true
-    autoconfigure: true
-  # packages
-  
   # service
-  message.generator:
-    class: VSC\Messenger\Service\MessageGenerator
+  sqs.client:
+    class: Aws\Sqs\SqsClient
+  message.sender:
+    class: Quartetcom\SQSConnectivityChecker\Service\Sender
+    argument:
+      $client: '@sqs.client'
   # command
-  command.message:
-    class: VSC\Messenger\Command\MessageCommand
+  command.sender:
+    class: Quartetcom\SQSConnectivityChecker\Command\SenderCommand
     arguments:
-      $messageGenerator: '@message.generator'
+      $sender: '@message.sender'
   # general
   app:
     class: Symfony\Component\Console\Application

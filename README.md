@@ -1,4 +1,4 @@
-# symfony-messenger-playground
+# SQS-Connectivity-Checker
 
 - https://symfony.com/doc/current/components/messenger.html
 - https://symfony.com/doc/current/messenger.html
@@ -21,12 +21,12 @@ ref. https://symfony.com/doc/4.4/components/console.html
 
 ### composer.jsonにautoloadを追加
 
-名前空間は`VSC\Messenger\`とします。
+名前空間は`Quartetcom\SQSConnectivityChecker`とします。
 
 ```json
 "autoload": {
     "psr-4": {
-        "VSC\\Messenger\\": "src/"
+        "Quartetcom\\SQSConnectivityChecker\\": "src/"
     }
 },
 ```
@@ -60,10 +60,13 @@ ref.
 必要なコンポーネントをインストールします。
 
 ```sh
+- symfony/console"
 $ composer require symfony/dependency-injection
 # symfony/configは必用
 $ composer require symfony/config
 $ composer require symfony/yaml
+$ composer require symfony/dotenv 
+$ composer require aws/aws-sdk-php
 ```
 
 `config/service.yml`でServiceを定義します。
@@ -71,11 +74,11 @@ $ composer require symfony/yaml
 ```yml
 services:
   message.generator:
-    class: VSC\Messenger\Service\MessageGenerator
+    class: Quartetcom\SQSConnectivityChecker\Service\MessageGenerator
 
   # command
   command.message:
-    class: VSC\Messenger\Command\MessageCommand
+    class: Quartetcom\SQSConnectivityChecker\Command\MessageCommand
     arguments:
       $messageGenerator: '@message.generator'
 
