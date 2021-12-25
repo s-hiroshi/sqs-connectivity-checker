@@ -1,0 +1,20 @@
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+  # packages
+  
+  # service
+  message.generator:
+    class: VSC\Messenger\Service\MessageGenerator
+  # command
+  command.message:
+    class: VSC\Messenger\Command\MessageCommand
+    arguments:
+      $messageGenerator: '@message.generator'
+  # general
+  app:
+    class: Symfony\Component\Console\Application
+    calls:
+      - add: ['@command.message']
+    public: true

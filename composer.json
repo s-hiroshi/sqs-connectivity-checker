@@ -1,0 +1,24 @@
+{
+    "require": {
+        "symfony/console": "^5.4",
+        "symfony/dependency-injection": "^5.4",
+        "symfony/config": "^5.4",
+        "symfony/yaml": "^5.4",
+        "symfony/messenger": "^5.4",
+        "symfony/amazon-sqs-messenger": "^5.4",
+        "symfony/dotenv": "^5.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "VSC\\Messenger\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "VSC\\Messenger\\Tests\\": "tests/"
+        }
+    },
+    "bin": [
+        "bin/console"
+    ]
+}
