@@ -2,18 +2,30 @@ services:
   # service
   sqs.client:
     class: Aws\Sqs\SqsClient
+    arguments: 
+      - { region: 'ap-northeast-1', version: '2012-11-05' }
+  message.receiver:
+    class: Quartetcom\SQSConnectivityChecker\Service\Receiver
+    arguments:
+      $client: '@sqs.client' 
   message.sender:
     class: Quartetcom\SQSConnectivityChecker\Service\Sender
-    argument:
+    arguments:
       $client: '@sqs.client'
   # command
+  command.receiver:
+    class: Quartetcom\SQSConnectivityChecker\Command\ReceiverCommand
+    arguments:
+      $receiver: '@message.receiver'
   command.sender:
     class: Quartetcom\SQSConnectivityChecker\Command\SenderCommand
     arguments:
       $sender: '@message.sender'
+  
   # general
   app:
     class: Symfony\Component\Console\Application
     calls:
-      - add: ['@command.message']
+      - add: ['@command.receiver']
+      - add: ['@command.sender']
     public: true
