@@ -3,7 +3,7 @@ services:
   sqs.client:
     class: Aws\Sqs\SqsClient
     arguments: 
-      - { region: 'ap-northeast-1', version: '2012-11-05' }
+      - { region: '%env(string:AWS_REGION)%', version: '2012-11-05' }
   message.receiver:
     class: Quartetcom\SQSConnectivityChecker\Service\Receiver
     arguments:

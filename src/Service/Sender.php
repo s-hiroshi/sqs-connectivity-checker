@@ -1,6 +1,7 @@
 <?php
 
 namespace Quartetcom\SQSConnectivityChecker\Service;
+use Aws\Result;
 use Aws\Sqs\SqsClient;
 use Aws\Exception\AwsException;
 class Sender
@@ -15,9 +16,9 @@ class Sender
     /**
      * @throws \Exception
      */
-    public function sendMessage(string $messageBody) 
+    public function sendMessage(): Result 
     {
-        $message = $this->createParameter($messageBody);
+        $message = $this->createParameter();
         try {
             return $this->client->sendMessage($message);
         } catch (AwsException $e) {
@@ -25,7 +26,7 @@ class Sender
         } 
     }
     
-    private function createParameter(string $messageBody = 'Hello World'): array {
+    private function createParameter(): array {
         return [
             'DelaySeconds' => 10,
             'MessageAttributes' => [
@@ -34,7 +35,7 @@ class Sender
                     'StringValue' => "SQS Connectivity Checker"
                 ],
             ],
-            'MessageBody' => $messageBody,
+            'MessageBody' => 'Hello World!',
             'QueueUrl' => getenv('QUEUE_URL')
         ];
     }

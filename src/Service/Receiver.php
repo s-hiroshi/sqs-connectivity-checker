@@ -5,7 +5,9 @@ namespace Quartetcom\SQSConnectivityChecker\Service;
 
 
 use Aws\Exception\AwsException;
+use Aws\Result;
 use Aws\Sqs\SqsClient;
+
 
 class Receiver
 {
@@ -19,7 +21,7 @@ class Receiver
     /**
      * @throws \Exception
      */
-    public function receiveMessage()
+    public function receiveMessage(): Result
     {
         try {
             $result = $this->client->receiveMessage(array(
@@ -30,13 +32,12 @@ class Receiver
                 'WaitTimeSeconds' => 0,
             ));
             if (!empty($result->get('Messages'))) {
-                $result = $this->client->deleteMessage([
+                return $this->client->deleteMessage([
                     'QueueUrl' => getenv('QUEUE_URL'),
-                    'ReceiptHandle' => $result->get('Messages')[0]['ReceiptHandle']
+                    'ReceiptHandle' => $result->get('Messages')[0]['ReceiptHandle'],
                 ]);
-                return 0;
             } else {
-                return 0;
+                return $result;
             }
         } catch (AwsException $e) {
             throw new \Exception($e->getMessage());

@@ -11,8 +11,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ReceiverCommand extends Command
 {
 
-   const NAME = 'sqs:receiver';
-   private $receiver;
+    const NAME = 'sqs:receive';
+    private $receiver;
 
     public function __construct(Receiver $receiver)
     {
@@ -27,9 +27,10 @@ class ReceiverCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-
         try {
-            $this->receiver->receiveMessage();
+            $result = $this->receiver->receiveMessage();
+            var_dump(get_class($result));
+            $output->writeln($result->__toString());
 
             return 0;
         } catch (\Exception $e) {

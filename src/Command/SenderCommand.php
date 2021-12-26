@@ -4,7 +4,6 @@
 namespace Quartetcom\SQSConnectivityChecker\Command;
 
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Quartetcom\SQSConnectivityChecker\Service\Sender;
@@ -12,7 +11,7 @@ use Quartetcom\SQSConnectivityChecker\Service\Sender;
 class SenderCommand extends Command
 {
 
-   const NAME = 'sqs:sender';
+   const NAME = 'sqs:send';
    private $sender;
 
     public function __construct(Sender $sender)
@@ -21,23 +20,12 @@ class SenderCommand extends Command
         $this->sender = $sender;
     }
 
-    protected function configure()
-    {
-        $this->addUsage('Send message to sqs');
-
-        $this->addArgument(
-            'messageBody',
-            InputArgument::REQUIRED,
-            'Message body to send to SQS'
-        );
-    }
-
     protected function execute(InputInterface $input, OutputInterface $output)
     {
 
-        $messageBody = $input->getArgument('messageBody');
         try {
-            $this->sender->sendMessage($messageBody);
+            $result = $this->sender->sendMessage();
+            $output->writeln($result->__toString());
 
             return 0;
         } catch (\Exception $e) {
