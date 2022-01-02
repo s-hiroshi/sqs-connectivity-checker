@@ -7,11 +7,12 @@ namespace Quartetcom\SQSConnectivityChecker\Service;
 use Aws\Exception\AwsException;
 use Aws\Result;
 use Aws\Sqs\SqsClient;
+use Exception;
 
 
 class Receiver
 {
-    private $client;
+    private SqsClient $client;
 
     public function __construct(SqsClient $client)
     {
@@ -19,6 +20,7 @@ class Receiver
     }
 
     /**
+     * @return \Aws\Result
      * @throws \Exception
      */
     public function receiveMessage(): Result
@@ -40,7 +42,7 @@ class Receiver
                 return $result;
             }
         } catch (AwsException $e) {
-            throw new \Exception($e->getMessage());
+            throw new Exception($e->getMessage());
         }
     }
 

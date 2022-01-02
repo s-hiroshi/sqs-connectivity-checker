@@ -12,7 +12,7 @@ class ReceiverCommand extends Command
 {
 
     const NAME = 'sqs:receive';
-    private $receiver;
+    private Receiver $receiver;
 
     public function __construct(Receiver $receiver)
     {
@@ -25,11 +25,15 @@ class ReceiverCommand extends Command
         $this->addUsage('Receive message to sqs');
     }
 
+    /**
+     * @param \Symfony\Component\Console\Input\InputInterface   $input
+     * @param \Symfony\Component\Console\Output\OutputInterface $output
+     * @return int
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
             $result = $this->receiver->receiveMessage();
-            var_dump(get_class($result));
             $output->writeln($result->__toString());
 
             return 0;

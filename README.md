@@ -3,17 +3,24 @@
 ECRとSQSの疎通を確認します。
 タスクとして実行することを想定しています。
 
-
 ## 環境構築
 
 ```shell
 $ composer install
 ```
 
-## ローカル Dockerを使用して確認
+## ローカルでDockerを使用して確認
 
 1. `docker build`でイメージ作成
 1. `docker run`でSymfony コマンド実行
+
+### Dockerイメージ作成
+
+```sh
+$ docker build -t {{image_name}} .
+```
+
+### クレデンシャル準備
 
 ```shell
 # シェル変数にローカルの`default`のクレデンシャルを設定
@@ -32,7 +39,7 @@ $ docker run -e QUEUE_URL=https://sqs.ap-northeast-1.amazonaws.com/{{アカウ�
              -e AWS_REGION=$AWS_REGION \
              -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
              -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
-             bin/console sqs:send
+             {{image name}} bin/console sqs:send
 ````
 
 ### 受信確認
@@ -45,7 +52,7 @@ $ docker run -e QUEUE_URL=https://sqs.ap-northeast-1.amazonaws.com/{{アカウ�
              -e AWS_REGION=$AWS_REGION \
              -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
              -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
-             bin/console sqs:send
+             {{image name}} bin/console sqs:send
 ````
 
 ## AWS ECSを使用して確認
@@ -55,6 +62,6 @@ $ docker run -e QUEUE_URL=https://sqs.ap-northeast-1.amazonaws.com/{{アカウ�
 1. タスク定義を作成
 1. タスクを実行
 
-タスクを実行する際に以下のようにコンテナを上書きします（例:sqs:receive）
+タスクを実行する際に以下のようにコンテナを上書きします（例:sqs:send）
 
 ![コンテナを上書き](aws-ecs.png)
