@@ -35,7 +35,7 @@ Symfony Command：sqs:send
 
 ```shell
 # -eでSQSキューのURLと↑でシェル変数に格納したクレデンシャルをコンテナに環境変数として渡す
-$ docker run -e QUEUE_URL=https://sqs.ap-northeast-1.amazonaws.com/{{アカウントID}}/{{キューURL}} \
+$ docker run -e QUEUE_URL={{キューURL}} \
              -e AWS_REGION=$AWS_REGION \
              -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
              -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
@@ -48,11 +48,11 @@ Symfony Command：sqs:receive
 
 ```shell
 # -eでSQSキューのURLと↑でシェル変数に格納したクレデンシャルをコンテナに環境変数として渡す
-$ docker run -e QUEUE_URL=https://sqs.ap-northeast-1.amazonaws.com/{{アカウントID}}/{{キューURL}} \
+$ docker run -e QUEUE_URL={{キューURL}} \
              -e AWS_REGION=$AWS_REGION \
              -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
              -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
-             {{image name}} bin/console sqs:send
+             {{image name}} bin/console sqs:receive
 ````
 
 ## AWS ECSを使用して確認
