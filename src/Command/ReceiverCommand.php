@@ -33,8 +33,8 @@ class ReceiverCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         try {
-            $result = $this->receiver->receiveMessage();
-            $output->writeln($result->__toString());
+            $result = $this->receiver->receive();
+            $output->writeln($result);
 
             return 0;
         } catch (\Exception $e) {

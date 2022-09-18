@@ -13,37 +13,67 @@ use Exception;
 class Receiver
 {
     private SqsClient $client;
+    private string $queueUrl;
 
     public function __construct(SqsClient $client)
     {
         $this->client = $client;
+        $this->queueUrl = getenv('QUEUE_URL');
+    }
+
+    /**
+     * @throws Exception
+     */
+    private function deleteMessage(string $receiptHandle): Result
+    {
+        try {
+            return $this->client->deleteMessage([
+                'QueueUrl' => $this->queueUrl,
+                'ReceiptHandle' => $receiptHandle,
+            ]);
+        } catch (AwsException $e) {
+            throw new Exception($e->getMessage());
+        }
     }
 
     /**
      * @return \Aws\Result
      * @throws \Exception
      */
-    public function receiveMessage(): Result
+    private function receiveMessage(): Result
     {
         try {
-            $result = $this->client->receiveMessage(array(
+            return $this->client->receiveMessage(array(
                 'AttributeNames' => ['SentTimestamp'],
-                'MaxNumberOfMessages' => 1,
+                'MaxNumberOfMessages' => 1, // 1件のみを取得
                 'MessageAttributeNames' => ['All'],
-                'QueueUrl' => getenv('QUEUE_URL'),
+                'QueueUrl' => $this->queueUrl,
                 'WaitTimeSeconds' => 0,
             ));
-            if (!empty($result->get('Messages'))) {
-                return $this->client->deleteMessage([
-                    'QueueUrl' => getenv('QUEUE_URL'),
-                    'ReceiptHandle' => $result->get('Messages')[0]['ReceiptHandle'],
-                ]);
-            } else {
-                return $result;
-            }
         } catch (AwsException $e) {
             throw new Exception($e->getMessage());
         }
     }
 
+    /**
+     * @return \Aws\Result[]|string[]
+     * @throws Exception
+     */
+    public function receive(): array
+    {
+        try {
+            $receiveResult = $this->receiveMessage();
+            if (!empty($receiveResult[0])) {
+               return [
+                   $receiveResult,
+                   $this->deleteMessage($receiveResult->get('Messages')[0]['ReceiptHandle'])
+               ];
+
+            }
+            return[$receiveResult];
+                
+        } catch (Exception $e) {
+            throw new Exception($e->getMessage());
+        }
+    }
 }
