@@ -1,48 +1,82 @@
 # SQS-Connectivity-Checker
 
-ECRとSQSの疎通を確認します。
-タスクとして実行することを想定しています。
+ECRとSQSの疎通を確認します。  
 
 ## 環境構築
 
 ```shell
 $ composer install
 ```
+## 実行方法
 
-## ローカルでDockerを使用して確認
+- [ローカルで実行](#ローカルで実行)
+- [Dockerを使用して実行](#Dockerを使用して実行)
+- [ECSタスクとして実行](#ECSタスクとして実行)
 
-1. `docker build`でイメージ作成
-1. `docker run`でSymfony コマンド実行
+## ローカルで実行
 
-### Dockerイメージ作成
+- クレデンシャルはローカルの`default`を使用  
+  ref. [Configuration and credential file settings](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html)
+- `.env`に変数を設定
+
+### 送信
+
+```shell
+$ bin/console sqs:send
+````
+
+### 受信
+
+```shell
+$ bin/console sqs:receive
+````
+
+## Dockerを使用して実行
+
+1. `docker build`でイメージを作成
+1.  シェル変数にプロファイルを設定
+1. `docker run`でSymfony コマンドを実行
+
+### Dockerイメージを作成
 
 ```sh
 $ docker build -t {{image_name}} .
 ```
 
-### クレデンシャル準備
+### シェル変数にプロファイルを設定
+
+シェル変数にリージョンとクレデンシャルを設定します。  
+（`default`のプロファイルを使用する場合は以下のように設定できます。）
+
 
 ```shell
-# シェル変数にローカルの`default`のクレデンシャルを設定
+# シェル変数にdefualtプロファイルのリージョンとクレデンシャルを設定
 AWS_REGION=$(aws configure get region)
 AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
 AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
 ```
 
-### 送信確認
+
+- 参考：[Configuration and credential file settings](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html)
+
+### 送信
 
 Symfony Command：sqs:send
 
 ```shell
 # -eでSQSキューのURLと↑でシェル変数に格納したクレデンシャルをコンテナに環境変数として渡す
 $ docker run -e QUEUE_URL={{キューURL}} \
+             -e MESSAGE_ATTRIBUTES_TITLE={{タイトル}} \
+             -e MESSAGE_BODY={{メッセージボディ}} \
              -e AWS_REGION=$AWS_REGION \
              -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
              -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
              {{image name}} bin/console sqs:send
 ````
 
-### 受信確認
+`MESSAGE_ATTRIBUTES_TITLE`、`MESSAGE_BODY`を省略した場合は`.env`ファイルの値が使用されます。
+
+### 受信
 
 Symfony Command：sqs:receive
 
@@ -55,13 +89,13 @@ $ docker run -e QUEUE_URL={{キューURL}} \
              {{image name}} bin/console sqs:receive
 ````
 
-## AWS ECSを使用して確認
+## ECSタスクとして実行
 
 1. ECRにリポジトリを作成＆イメージをPush
 1. （必要なら）クラスタを作成
 1. タスク定義を作成
 1. タスクを実行
 
-タスクを実行する際に以下のようにコンテナを上書きします（例:sqs:send）
+タスクを実行する際にコンテナの環境変数を上書きします（例:sqs:send）
 
 ![コンテナを上書き](aws-ecs.png)
