@@ -37,10 +37,10 @@ class Sender
             'MessageAttributes' => [
                 "Title" => [
                     'DataType' => "String",
-                    'StringValue' => "SQS Connectivity Checker",
+                    'StringValue' => getenv('MESSAGE_ATTRIBUTES_TITLE'),
                 ],
             ],
-            'MessageBody' => 'Hello World!',
+            'MessageBody' => getenv('MESSAGE_BODY'),
             'QueueUrl' => getenv('QUEUE_URL'),
         ];
     }
