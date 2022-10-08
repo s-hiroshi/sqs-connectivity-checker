@@ -3,48 +3,54 @@
 namespace HSawai\SQSConnectivityChecker\Tests;
 
 use Aws\Exception\AwsException;
-use Aws\Command;
 use Aws\Result;
 use Aws\Sqs\SqsClient;
 use Exception;
 use HSawai\SQSConnectivityChecker\Service\Sender;
+use Aws\MockHandler;
+use Aws\CommandInterface;
+use Psr\Http\Message\RequestInterface;
 
 use PHPUnit\Framework\TestCase;
 
 class SenderTest extends TestCase
 {
-    private $sqsClient;
-
-
+    private $client;
+    private $mock;
 
     protected function setUp(): void
     {
-        $this->sqsClient = $this->getMockBuilder(SqsClient::class)
-            ->disableOriginalConstructor()
-            ->addMethods(['sendMessage'])
-            ->getMock();
+        $this->mock = new MockHandler();
+
+
+        $this->client = new SqsClient([
+            'region' => 'ap-northeast-1',
+            'version' => '2012-11-05',
+            'handler' => $this->mock,
+        ]);
     }
 
     public function testSendMessageSuccess(): void
     {
-        $this->sqsClient->expects($this->once())
-            ->method('sendMessage')
-            ->willReturn(new Result(['foo' => 'bar']));
-        $sender = new Sender($this->sqsClient);
+        $this->mock->append(new Result(['foo' => 'bar']));
+        $sender = new Sender($this->client);
 
         $this->assertInstanceOf(Result::class, $sender->sendMessage());
     }
 
+    /**
+     * @return void
+     * @throws Exception
+     */
     public function testSendMessageException(): void
     {
-
-        $command = $this->createMock(Command::class);
-        $this->sqsClient->expects($this->once())
-            ->method('sendMessage')
-            ->willThrowException(new AwsException('SOME ERROR', $command));
-        $sender = new Sender($this->sqsClient);
-
         $this->expectException(Exception::class);
+        $this->mock->append(function (CommandInterface $cmd, RequestInterface $req) {
+            return new AwsException('Mock exception', $cmd);
+        });
+
+        $sender = new Sender($this->client);
+        $sender->sendMessage();
         $sender->sendMessage();
     }
 }
