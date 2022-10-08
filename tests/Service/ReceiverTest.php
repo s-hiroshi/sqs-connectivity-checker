@@ -1,6 +1,6 @@
 <?php
 
-namespace HSawai\SQSConnectivityChecker\Tests;
+namespace HSawai\SQSConnectivityChecker\Tests\Service;
 
 use Aws\Exception\AwsException;
 use Aws\Result;
