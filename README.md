@@ -99,3 +99,19 @@ $ docker run -e QUEUE_URL={{キューURL}} \
 タスクを実行する際にコンテナの環境変数を上書きします（例:sqs:send）
 
 ![コンテナを上書き](aws-ecs.png)
+
+## テスト
+
+テストは開発者を対象として記載しています。
+
+1. composerで以下パッケージをインストール。
+    - `$ composer req phpunit/phpunit --dev`
+    - `$ composer req symfony/phpunit-bridge --dev`
+1. composer.jsonのautoload-devでテスト対象を定義
+1. phpunit.xml.distを作成
+
+ref. 
+
+- [PHPUnit Manual](https://phpunit.readthedocs.io/en/9.5/)
+- [Handlers and middleware in the AWS SDK for PHP Version 3](https://docs.aws.amazon.com/sdk-for-php/v3/developer-guide/guide_handlers-and-middleware.html)  
+  AWS SDK for PHP Version 3をMockを使ってテストする方法
