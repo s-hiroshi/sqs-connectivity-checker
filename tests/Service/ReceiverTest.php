@@ -26,6 +26,7 @@ class ReceiverTest extends TestCase
             'region' => 'ap-northeast-1',
             'version' => '2012-11-05',
             'handler' => $this->mock,
+            'credentials' => false,
         ]);
     }
 
