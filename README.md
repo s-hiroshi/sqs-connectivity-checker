@@ -66,8 +66,8 @@ Symfony Command：sqs:send
 ```shell
 # -eでSQSキューのURLと↑でシェル変数に格納したクレデンシャルをコンテナに環境変数として渡す
 $ docker run -e QUEUE_URL={{キューURL}} \
-             -e MESSAGE_ATTRIBUTES_TITLE={{タイトル}} \
-             -e MESSAGE_BODY={{メッセージボディ}} \
+             -e MESSAGE_ATTRIBUTES_TITLE={{タイトル}} \ # スペースを含める場合はクウォートで囲む
+             -e MESSAGE_BODY={{メッセージボディ}} \ # スペースを含める場合はクウォートで囲む
              -e AWS_REGION=$AWS_REGION \
              -e AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID \
              -e AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY \
