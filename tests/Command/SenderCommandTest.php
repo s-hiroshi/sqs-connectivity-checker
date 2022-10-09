@@ -22,7 +22,7 @@ class SenderCommandTest extends TestCase
     protected function setUp(): void
     {
         $this->mockHandler = new MockHandler();
-        $this->mockHandler->append(new Result(['foo' => 'bar'])); // Call SqsClient::sendMessage
+        $this->mockHandler->append(new Result(['foo' => 'bar'])); // Call SqsClient::send
         // Call SqsClient::receiveMessage with AwsException
         $this->mockHandler->append(function (CommandInterface $cmd, RequestInterface $req) {
             return new AwsException('Mock exception', $cmd);
@@ -53,7 +53,7 @@ class SenderCommandTest extends TestCase
     public function testReceiverCommandFailed(): void
     {
         $sender = new Sender($this->client);
-        $sender->sendMessage();
+        $sender->send();
 
         $command = new SenderCommand($sender);
         $commandTester = new CommandTester($command);

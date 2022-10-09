@@ -24,7 +24,7 @@ class SenderCommand extends Command
     {
 
         try {
-            $result = $this->sender->sendMessage();
+            $result = $this->sender->send();
             $output->writeln($result->__toString());
 
             return 0;
