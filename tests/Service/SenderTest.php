@@ -36,7 +36,7 @@ class SenderTest extends TestCase
         $this->mock->append(new Result(['foo' => 'bar']));
         $sender = new Sender($this->client);
 
-        $this->assertInstanceOf(Result::class, $sender->sendMessage());
+        $this->assertInstanceOf(Result::class, $sender->send());
     }
 
     /**
@@ -51,7 +51,7 @@ class SenderTest extends TestCase
         });
 
         $sender = new Sender($this->client);
-        $sender->sendMessage();
-        $sender->sendMessage();
+        $sender->send();
+        $sender->send();
     }
 }

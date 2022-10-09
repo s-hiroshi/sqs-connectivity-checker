@@ -20,7 +20,7 @@ class Sender
      * @return \Aws\Result
      * @throws \Exception
      */
-    public function sendMessage(): Result
+    public function send(): Result
     {
         $message = $this->createParameter();
         try {
