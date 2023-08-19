@@ -56,7 +56,6 @@ AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
 AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
 ```
 
-
 - 参考：[Configuration and credential file settings](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html)
 
 ### 送信
