@@ -1,6 +1,6 @@
 # SQS-Connectivity-Checker
 
-ECRとSQSの疎通を確認します。  
+ECSとSQSの疎通を確認します。  
 
 ## 環境構築
 
